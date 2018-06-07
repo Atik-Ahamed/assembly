@@ -1,0 +1,88 @@
+.MODEL SMALL
+.STACK 100H
+.DATA   
+STRING1 DB 'FGHIJ'
+STRING2 DB 'ABCDE'
+DB 5 DUP (?)
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX  
+    MOV ES,AX
+                    
+    MOV CX,5
+    
+    LEA SI,STRING1
+    LEA DI,STRING2+5
+    CLD
+    
+    TOP:
+        MOVSB
+    LOOP TOP 
+    ;NOW STRING2=ABCDEFGHIJ
+    
+    LEA SI,STRING2
+    LEA DI,STRING1
+    
+    MOV CX,5
+    
+    EXCHANGE_STRING:
+    
+    MOVSB
+    
+    LOOP EXCHANGE_STRING 
+    ;NOW STRING1=ABCDE
+    ;NOW STRING2=ABCDEFGHIJ
+    
+    MOV CX,5
+    
+    LEA SI, STRING2+5
+    LEA DI, STRING1
+    
+    EXCHANGE_STRING2:
+    
+    MOVSB
+    
+    LOOP EXCHANGE_STRING2
+    
+    
+    
+    
+    MOV CX,5
+    LEA SI,STRING2 
+    
+    
+    DISP_STRING:
+    MOV AH,2
+    LODSB
+    MOV DL,AL
+    INT 21H
+    
+    LOOP DISP_STRING 
+    
+    
+    
+    MOV AH,2
+    MOV DL,0AH
+    INT 21H
+    MOV DL,0DH
+    INT 21H
+     
+    
+    MOV CX,5
+    LEA SI,STRING1 
+    
+    
+    DISP_STRING1:
+    MOV AH,2
+    LODSB
+    MOV DL,AL
+    INT 21H
+    
+    LOOP DISP_STRING1
+    
+    
+    MOV AH,4CH
+    INT 21H
+    
+    MAIN ENDP
+END MAIN
