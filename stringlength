@@ -1,0 +1,96 @@
+.MODEL SMALL
+.STACK 100H
+.DATA
+STR DB 'MY NAME IS ATIK HA HA HA',0
+
+MAIN PROC
+    
+    MOV AX,@DATA
+    MOV DS,AX
+    MOV ES,AX  
+    
+    XOR CX,CX
+    XOR DX,DX
+    LEA DX,STR 
+    
+    
+    CALL LENGTH
+    
+    MOV AX,CX
+    CALL OUTDEC
+   
+    
+    
+    
+    
+    MOV AH,04CH
+    INT 21H
+    
+    
+    
+    MAIN ENDP
+
+
+LENGTH PROC  
+    
+    
+     MOV BX,DX 
+     
+     BEGIN_PROGRAM:
+        MOV AL, STR+BX  
+        CMP AL,0H     
+    
+    JE FUNC_END
+        INC CX
+        INC BX
+    JMP BEGIN_PROGRAM
+    
+    FUNC_END: 
+    RET
+    LENGTH ENDP 
+
+
+
+OUTDEC PROC  
+    
+    ;RECEIVES NUMBER IN AX AND OUTPUT IT
+    PUSH AX
+    PUSH BX
+    PUSH CX
+    PUSH DX
+    CMP AL,0
+    JG VALID ; IF AX>=0
+    PUSH AX
+    MOV DL,'-'
+    MOV AH,2
+    INT 21H
+    POP AX
+    NEG AX
+    XOR AH,AH
+    VALID:
+    XOR CX,CX
+    MOV BX,10D ; BX IS DIVISOR
+    DIVIDE:
+    XOR DX,DX ; DX IS REMAINDER
+    DIV BX ; DIVIDE AX BY BX, AX =QUOTIENT, DX=REMAINDER
+    PUSH DX ; PUSH REMAINDER
+    INC CX
+    OR AX,AX ; UNTILL AX IS NOT ZERO
+    JNE DIVIDE
+    MOV AH,2
+    PRINT:
+    POP DX
+    OR DL,30H ;PRINT DIGITS
+    INT 21H
+    LOOP PRINT
+    POP DX
+    POP CX
+    POP BX
+    POP AX
+    RET
+OUTDEC ENDP
+
+
+END MAIN
+
+
